@@ -1,6 +1,8 @@
 .DS_Store
 .env
 .flaskenv
+.autoenv
+.autoenv.leave
 *.pyc
 *.pyo
 env/
