@@ -1,11 +1,14 @@
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
+import os
 
 # database_path = os.environ['DATABASE_URL']
 
 database_name = "moneytrack"
 database_path = "postgres://{}/{}".format('sterl:majetich1@localhost:5432', database_name)
+
+database_path = os.environ.get("DATABASE_URL", database_path)
 
 db = SQLAlchemy()
 
