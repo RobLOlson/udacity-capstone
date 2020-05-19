@@ -34,6 +34,23 @@ class Expenditure(db.Model):
     self.name = name
     self.amount = amount
 
+  def __repr__(self):
+    return f"<Expenditure({self.name})[#{self.id}]>"
+
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+
+  def update(self):
+    db.session.commit()
+
+  def undo(self):
+    db.session.rollback()
+
   def dict_form(self):
     return {
       'id': self.id,
@@ -54,6 +71,9 @@ class Category(db.Model):
 
   def __init__(self, name):
     self.name = name
+
+  def __repr__(self):
+    return f"<Category({self.name})[#{self.name}]>"
 
   def dict_form(self):
     return {
