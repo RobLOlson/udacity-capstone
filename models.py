@@ -47,7 +47,10 @@ class Expenditure(db.Model):
     db.session.delete(self)
     db.session.commit()
 
-  def update(self):
+  def update(self, target_dict):
+    for key in target_dict.keys():
+      if key in ["name", "amount", "category_id"]:
+        setattr(self, key, target_dict[key])
     db.session.commit()
 
   def undo(self):

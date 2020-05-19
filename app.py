@@ -15,6 +15,7 @@ def create_app(test_config=None):
     def be_cool():
         return "Be cool, man, be coooool! You're almost a FSND grad!"
 
+    @app.route("/expenditures")
     @app.route("/")
     def index():
       all_expenses = Expenditure.query.all()
@@ -31,6 +32,16 @@ def create_app(test_config=None):
         "success": True,
         "expenditure": new_expense.dict_form(),
         })
+
+    @app.route("/expenditures/<int:expense_id>", methods=["PATCH"])
+    def update_expenditure(expense_id):
+      breakpoint()
+      target_expense = Expenditure.query.get(expense_id)
+      target_expense.update(request.json)
+      return jsonify({
+        "success": True,
+        "expenditure": target_expense.dict_form(),
+      })
 
     @app.route("/categories")
     def get_categories():
