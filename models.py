@@ -31,9 +31,10 @@ class Expenditure(db.Model):
   category = db.relationship('Category', backref="expenditures", lazy=True)
 
 
-  def __init__(self, name, amount):
+  def __init__(self, name, amount, category_id=None):
     self.name = name
     self.amount = amount
+    self.category_id=category_id
 
   def __repr__(self):
     return f"<Expenditure({self.name})[#{self.id}]>"
