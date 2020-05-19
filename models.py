@@ -30,7 +30,7 @@ class Expenditure(db.Model):
   expenditure_categories = db.relationship('ExpenditureCategory', backref="expenditure", lazy=True)
 
 
-  def __init__(self, name, amount, category_id):
+  def __init__(self, name, amount):
     self.name = name
     self.amount = amount
 

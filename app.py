@@ -23,6 +23,15 @@ def create_app(test_config=None):
         "expenditures": all_expenses,
         })
 
+    @app.route("/expenditures", methods=["POST"])
+    def add_expenditure():
+      new_expense = Expenditure(**request.json)
+      new_expense.insert()
+      return jsonify({
+        "success": True,
+        "expenditure": new_expense.dict_form(),
+        })
+
     @app.errorhandler(400)
     def handle_error_400(error):
         return jsonify({
