@@ -27,7 +27,7 @@ class Expenditure(db.Model):
   id = Column(Integer, primary_key=True)
   name = Column(String)
   amount = Column(Integer) # in cents
-  expenditure_categories = db.relationship('expenditure_categories', backref="expenditure", lazy=True)
+  expenditure_categories = db.relationship('ExpenditureCategory', backref="expenditure", lazy=True)
 
 
   def __init__(self, name, amount, category_id):
@@ -56,8 +56,11 @@ class Expenditure(db.Model):
       'id': self.id,
       'name': self.name,
       'amount': self.amount,
-      'category_id': self.category_id,
+      'expenditure_categories': self.expenditure_categories,
       }
+
+# </END OF class Expenditure(name, ...)>
+
 
 '''
 Category--represents one category of expenditure
@@ -67,7 +70,7 @@ class Category(db.Model):
 
   id = Column(Integer, primary_key=True)
   name = Column(String)
-  expenditure_categories = db.relationship("expenditure_categories", backref='category', lazy=True)
+  expenditure_categories = db.relationship("ExpenditureCategory", backref='category', lazy=True)
 
   def __init__(self, name):
     self.name = name
@@ -75,11 +78,25 @@ class Category(db.Model):
   def __repr__(self):
     return f"<Category({self.name})[#{self.name}]>"
 
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+
+  def update(self):
+    db.session.commit()
+
+  def undo(self):
+    db.session.rollback()
+
   def dict_form(self):
     return {
       'id': self.id,
       'name': self.name
-    }
+  }
 
 class ExpenditureCategory(db.Model):
   __tablename__ = "ExpenditureCategory"

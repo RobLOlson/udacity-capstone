@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from models import setup_db
+from models import setup_db, Expenditure, Category, ExpenditureCategory
 
 
 def create_app(test_config=None):
@@ -11,20 +11,62 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app)
 
-    @app.route('/')
-    def get_greeting():
-        excited = os.environ.get('EXCITED')
-        greeting = "Hello"
-        if excited == 'true': greeting = greeting + "!!!!!"
-        return greeting
-
     @app.route('/coolkids')
     def be_cool():
         return "Be cool, man, be coooool! You're almost a FSND grad!"
 
+    @app.route("/")
+    def index():
+      all_expenses = Expenditure.query.all()
+      return jsonify({
+        "success": True,
+        "expenditures": all_expenses,
+        })
+
+    @app.errorhandler(400)
+    def handle_error_400(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": error.description,
+            }), 400
+
+    @app.errorhandler(401)
+    def handle_error_401(error):
+        return jsonify({
+            "success": False,
+            "error": 401,
+            "message": error.description,
+            }), 401
+
+
+    @app.errorhandler(403)
+    def handle_error_403(error):
+        return jsonify({
+            "success": False,
+            "error": 403,
+            "message": error.description,
+            }), 403
+
+    @app.errorhandler(404)
+    def handle_error_404(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": error.description,
+            }), 404
+
+    @app.errorhandler(422)
+    def handle_error_402(error):
+        return jsonify({
+            "success": False,
+            "error": 402,
+            "message": error.description,
+            })
     return app
 
 app = create_app()
+
 
 if __name__ == '__main__':
     app.run()
