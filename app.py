@@ -17,10 +17,11 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
+      breakpoint()
       all_expenses = Expenditure.query.all()
       return jsonify({
         "success": True,
-        "expenditures": all_expenses,
+        "expenditures": [e.dict_form() for e in all_expenses],
         })
 
     @app.route("/expenditures", methods=["POST"])
