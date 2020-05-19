@@ -27,7 +27,8 @@ class Expenditure(db.Model):
   id = Column(Integer, primary_key=True)
   name = Column(String)
   amount = Column(Integer) # in cents
-  expenditure_categories = db.relationship('ExpenditureCategory', backref="expenditure", lazy=True)
+  category_id = db.Column(Integer, ForeignKey('Category.id'))
+  category = db.relationship('Category', backref="expenditures", lazy=True)
 
 
   def __init__(self, name, amount):
@@ -56,7 +57,7 @@ class Expenditure(db.Model):
       'id': self.id,
       'name': self.name,
       'amount': self.amount,
-      'expenditure_categories': self.expenditure_categories,
+      'category_id': self.category_id,
       }
 
 # </END OF class Expenditure(name, ...)>
@@ -70,7 +71,6 @@ class Category(db.Model):
 
   id = Column(Integer, primary_key=True)
   name = Column(String)
-  expenditure_categories = db.relationship("ExpenditureCategory", backref='category', lazy=True)
 
   def __init__(self, name):
     self.name = name
@@ -96,10 +96,4 @@ class Category(db.Model):
     return {
       'id': self.id,
       'name': self.name
-  }
-
-class ExpenditureCategory(db.Model):
-  __tablename__ = "ExpenditureCategory"
-  id = Column(Integer, primary_key=True)
-  expenditure_id = Column(Integer, ForeignKey('Expenditure.id'))
-  category_id = Column(Integer, ForeignKey('Category.id'))
+    }
