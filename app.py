@@ -32,6 +32,23 @@ def create_app(test_config=None):
         "expenditure": new_expense.dict_form(),
         })
 
+    @app.route("/categories")
+    def get_categories():
+      all_categories = Category.query.all()
+      return jsonify({
+        "success": True,
+        "categories": [e.dict_form() for e in all_categories],
+        })
+
+    @app.route('/categories', methods=["POST"])
+    def add_category():
+      new_category = Category(**request.json)
+      new_category.insert()
+      return jsonify({
+        "success": True,
+        "category": new_category.dict_form(),
+        })
+
     @app.errorhandler(400)
     def handle_error_400(error):
         return jsonify({
