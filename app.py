@@ -17,7 +17,6 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
-      breakpoint()
       all_expenses = Expenditure.query.all()
       return jsonify({
         "success": True,
