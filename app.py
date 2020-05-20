@@ -4,12 +4,30 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import setup_db, Expenditure, Category
 from sqlalchemy import text
+from auth import requires_auth
 
 def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_object(os.environ['APP_SETTINGS'])
     setup_db(app)
     CORS(app)
+
+    AUTH0_CLIENT_ID = os.environ.get("AUTH0_CLIENT_ID")
+    AUTH_CALLBACK = os.environ.get("AUTH_CALLBACK")
+    AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
+
+    AUTH0_LOGIN = f"https://{AUTH0_DOMAIN}/authorize?audience=coffeapi&response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_CALLBACK}"
+
+    AUTH0_LOGOUT = f"https://{AUTH0_DOMAIN}/v2/logout?client_id={AUTH0_CLIENT_ID}&returnTo={AUTH_CALLBACK}"
+
+    @app.route("/login")
+    def login():
+        return f"<a href='{AUTH0_LOGIN}'> LOGIN </a> "
+
+    @app.route("/logout")
+    def logout():
+        return f"<a href='{AUTH0_LOGOUT}'> LOG OUT </a> "
+
 
     @app.route('/coolkids')
     def be_cool():
@@ -31,16 +49,21 @@ def create_app(test_config=None):
       return jsonify({
         "success": True,
         "expenditure": new_expense.dict_form(),
-        "message": f"DB_URL: {os.environ.get('DATABASE_URL')}",
         })
 
-    @app.route("/expenditures/<int:expense_id>", methods=["PATCH", "DELETE"])
-    def update_expenditure(expense_id):
+    @app.route("/expenditures/<int:expense_id>", methods=["GET", "PATCH", "DELETE"])
+    def one_expenditure(expense_id):
       # if id is zero, use last submitted
       if expense_id == 0:
         target_expense = Expenditure.query.order_by(text("id desc")).first()
       else:
         target_expense = Expenditure.query.get(expense_id)
+
+      if request.method == "GET":
+        return jsonify({
+          "success": True,
+          "expenditure": target_expense.dict_form(),
+          })
 
       if request.method == "PATCH":
         target_expense.update(request.json)
@@ -74,7 +97,7 @@ def create_app(test_config=None):
         "category": new_category.dict_form(),
         })
 
-    @app.route('/categories/<int:category_id>', methods=["PATCH", "DELETE"])
+    @app.route('/categories/<int:category_id>', methods=["GET", "PATCH", "DELETE"])
     def update_category(category_id):
       # if ID is zero, use last submitted
       if category_id == 0:
@@ -82,11 +105,17 @@ def create_app(test_config=None):
       else:
         target_category = Category.query.get(category_id)
 
+      if request.method == "GET":
+        return jsonify({
+          "success": True,
+          "category": target_category.dict_form(),
+          })
+
       if request.method=="PATCH":
         target_category.update(request.json)
         return jsonify({
           "success": True,
-          "expenditure": target_category.dict_form()
+          "category": target_category.dict_form()
           })
 
       if request.method=="DELETE":
