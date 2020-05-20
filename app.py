@@ -31,6 +31,7 @@ def create_app(test_config=None):
       return jsonify({
         "success": True,
         "expenditure": new_expense.dict_form(),
+        "message": f"DB_URL: {os.environ.get('DATABASE_URL')}",
         })
 
     @app.route("/expenditures/<int:expense_id>", methods=["PATCH", "DELETE"])
