@@ -35,7 +35,6 @@ def create_app(test_config=None):
 
     @app.route("/expenditures/<int:expense_id>", methods=["PATCH"])
     def update_expenditure(expense_id):
-      breakpoint()
       target_expense = Expenditure.query.get(expense_id)
       target_expense.update(request.json)
       return jsonify({
