@@ -59,6 +59,15 @@ def create_app(test_config=None):
         "category": new_category.dict_form(),
         })
 
+    @app.route('/categories/<int:category_id>', methods=["PATCH"])
+    def update_category(category_id):
+      target_category = Category.query.get(category_id)
+      target_category.update(request.json)
+      return jsonify({
+        "success": True,
+        "expenditure": target_category.dict_form()
+        })
+
     @app.errorhandler(400)
     def handle_error_400(error):
         return jsonify({
