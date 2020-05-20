@@ -73,14 +73,28 @@ def create_app(test_config=None):
         "category": new_category.dict_form(),
         })
 
-    @app.route('/categories/<int:category_id>', methods=["PATCH"])
+    @app.route('/categories/<int:category_id>', methods=["PATCH", "DELETE"])
     def update_category(category_id):
-      target_category = Category.query.get(category_id)
-      target_category.update(request.json)
-      return jsonify({
-        "success": True,
-        "expenditure": target_category.dict_form()
-        })
+      # if ID is zero, use last submitted
+      if category_id == 0:
+        target_category = Category.query.order_by(text("id desc")).first()
+      else:
+        target_category = Category.query.get(category_id)
+
+      if request.method=="PATCH":
+        target_category.update(request.json)
+        return jsonify({
+          "success": True,
+          "expenditure": target_category.dict_form()
+          })
+
+      if request.method=="DELETE":
+        target_category.delete(request.json)
+        all_categories = Category.query.all()
+        return jsonify({
+          "success": True,
+          "categories": [e.dict_form() for e in all_categories]
+          })
 
     @app.errorhandler(400)
     def handle_error_400(error):
