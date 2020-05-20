@@ -89,7 +89,7 @@ def create_app(test_config=None):
           })
 
       if request.method=="DELETE":
-        target_category.delete(request.json)
+        target_category.delete()
         all_categories = Category.query.all()
         return jsonify({
           "success": True,
