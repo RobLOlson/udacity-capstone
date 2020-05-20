@@ -3,7 +3,7 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import setup_db, Expenditure, Category
-
+from sqlalchemy import text
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -33,14 +33,28 @@ def create_app(test_config=None):
         "expenditure": new_expense.dict_form(),
         })
 
-    @app.route("/expenditures/<int:expense_id>", methods=["PATCH"])
+    @app.route("/expenditures/<int:expense_id>", methods=["PATCH", "DELETE"])
     def update_expenditure(expense_id):
-      target_expense = Expenditure.query.get(expense_id)
-      target_expense.update(request.json)
-      return jsonify({
-        "success": True,
-        "expenditure": target_expense.dict_form(),
-      })
+      # if id is zero, use last submitted
+      if expense_id == 0:
+        target_expense = Expenditure.query.order_by(text("id desc")).first()
+      else:
+        target_expense = Expenditure.query.get(expense_id)
+
+      if request.method == "PATCH":
+        target_expense.update(request.json)
+        return jsonify({
+          "success": True,
+          "expenditure": target_expense.dict_form(),
+        })
+
+      if request.method == "DELETE":
+        target_expense.delete()
+        all_expenditures = Expenditure.query.all()
+        return jsonify({
+          "success": True,
+          "expenditures": [e.dict_form() for e in all_expenditures]
+          })
 
     @app.route("/categories")
     def get_categories():
