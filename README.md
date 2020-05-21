@@ -26,7 +26,9 @@ Alternatively, you can run the server by feeding the app.py to the python interp
 
 Endpoint tests are written in Postman and stored in file "Capstone.postman_collection.json".  Run the backend endpoint tests from within Postman.
 
-Alternatively, pure python unit tests are included and can be run by invoking pytest.
+Additionally, pure python unit tests are included and can be run locally by invoking pytest (make sure local server is running).  Tests can also be run on heroku directly with the following command:
+
+    heroku run pytest
 
 ## API Reference
 
