@@ -3,11 +3,11 @@ from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
+import os
 
-
-AUTH0_DOMAIN = 'roblouis.auth0.com'
+AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'moneyapi'
+API_AUDIENCE = os.environ.get("API_AUDIENCE")
 
 ## AuthError Exception
 '''
@@ -122,9 +122,7 @@ def verify_decode_jwt(token):
         'description': 'Authentication token did not contain an appropriate RSA key.'
         }, 401)
 
-'''
-@TODO implement @requires_auth(permission) decorator method
-'''
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)

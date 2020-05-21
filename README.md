@@ -42,6 +42,14 @@ Response codes
 * 405 (Method not allowed)
 * 422 (Malformed JSON)
 
+### Role Based Access
+
+  GET requests are unrestricted.
+
+  The 'user' role has permission to POST and PATCH expenditures and categories.  The 'admin' has all 'user' permissions, plus DELETE permissions.
+
+  Users should authenticate with Auth0 to receive a Json-Web Token.  Use that token as a bearer token in the request's Authorization Header.
+
 ### Endpoints
 
 #### Expenditures
@@ -53,7 +61,7 @@ Response codes
 
 * /expenditures/<int:expense_id> (PATCH moneytracklol.herokuapp.com/questions/1)
   Allowed methods: GET, PATCH, DELETE
-  Gets/posts/deletes a specific expenditure.  If you supply a zero for expense_id, server will act accordingly on the most recent expenditure.
+  Gets/posts/deletes a specific expenditure.  Only the 'admin' role can use DELETE.  If you supply a zero for expense_id, server will act accordingly on the most recent expenditure.
 
 
 #### Categories
@@ -65,7 +73,7 @@ Response codes
 
 * /categories/<int:category_id> (PATCH moneytracklol.herokuapp.com/categories/1)
   Allowed methods: GET, PATCH, DELETE
-  Gets/posts/deletes a specified category.  If you supply a zero for category_id, server will act accordingly on the most recent category.
+  Gets/posts/deletes a specified category.  Only the 'admin' role can use DELETE.  If you supply a zero for category_id, server will act accordingly on the most recent category.
 
 ## Authors
 

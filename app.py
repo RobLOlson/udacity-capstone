@@ -15,8 +15,9 @@ def create_app(test_config=None):
     AUTH0_CLIENT_ID = os.environ.get("AUTH0_CLIENT_ID")
     AUTH_CALLBACK = os.environ.get("AUTH_CALLBACK")
     AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
+    API_AUDIENCE = os.environ.get("API_AUDIENCE")
 
-    AUTH0_LOGIN = f"https://{AUTH0_DOMAIN}/authorize?audience=coffeapi&response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_CALLBACK}"
+    AUTH0_LOGIN = f"https://{AUTH0_DOMAIN}/authorize?audience={API_AUDIENCE}&response_type=token&client_id={AUTH0_CLIENT_ID}&redirect_uri={AUTH_CALLBACK}"
 
     AUTH0_LOGOUT = f"https://{AUTH0_DOMAIN}/v2/logout?client_id={AUTH0_CLIENT_ID}&returnTo={AUTH_CALLBACK}"
 
@@ -42,8 +43,10 @@ def create_app(test_config=None):
         "expenditures": [e.dict_form() for e in all_expenses],
         })
 
+
     @app.route("/expenditures", methods=["POST"])
-    def add_expenditure():
+    @requires_auth(permission="post:expenditures")
+    def add_expenditure(jwt):
       new_expense = Expenditure(**request.json)
       new_expense.insert()
       return jsonify({
