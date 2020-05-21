@@ -37,10 +37,14 @@ Server is hosted locally on "localhost:5000".  A public facing server is hosted 
 ### Errors
 
 Response codes
-* 200 (Success)
-* 404 (Expense not found)
-* 405 (Method not allowed)
-* 422 (Malformed JSON)
+
+  * 200 (Success)
+
+  * 404 (Expense not found)
+
+  * 405 (Method not allowed)
+
+  * 422 (Malformed JSON)
 
 ### Role Based Access
 

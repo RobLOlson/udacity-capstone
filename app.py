@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import setup_db, Expenditure, Category
 from sqlalchemy import text
-from auth import requires_auth
+from auth import requires_auth, has_permission
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -63,25 +63,28 @@ def create_app(test_config=None):
         target_expense = Expenditure.query.get(expense_id)
 
       if request.method == "GET":
+
         return jsonify({
           "success": True,
           "expenditure": target_expense.dict_form(),
           })
 
       if request.method == "PATCH":
-        target_expense.update(request.json)
-        return jsonify({
-          "success": True,
-          "expenditure": target_expense.dict_form(),
-        })
+        if has_permission("patch:expenditures"):
+          target_expense.update(request.json)
+          return jsonify({
+            "success": True,
+            "expenditure": target_expense.dict_form(),
+          })
 
       if request.method == "DELETE":
-        target_expense.delete()
-        all_expenditures = Expenditure.query.all()
-        return jsonify({
-          "success": True,
-          "expenditures": [e.dict_form() for e in all_expenditures]
-          })
+        if has_permission("delete:expenditures"):
+          target_expense.delete()
+          all_expenditures = Expenditure.query.all()
+          return jsonify({
+            "success": True,
+            "expenditures": [e.dict_form() for e in all_expenditures]
+            })
 
     @app.route("/categories")
     def get_categories():
@@ -91,7 +94,9 @@ def create_app(test_config=None):
         "categories": [e.dict_form() for e in all_categories],
         })
 
+
     @app.route('/categories', methods=["POST"])
+    # @requires_auth(permission="post:expenditures")
     def add_category():
       new_category = Category(**request.json)
       new_category.insert()
@@ -114,20 +119,22 @@ def create_app(test_config=None):
           "category": target_category.dict_form(),
           })
 
-      if request.method=="PATCH":
-        target_category.update(request.json)
-        return jsonify({
-          "success": True,
-          "category": target_category.dict_form()
-          })
+      if request.method == "PATCH":
+        if has_permission("patch:expenditures"):
+          target_category.update(request.json)
+          return jsonify({
+            "success": True,
+            "category": target_category.dict_form()
+            })
 
-      if request.method=="DELETE":
-        target_category.delete()
-        all_categories = Category.query.all()
-        return jsonify({
-          "success": True,
-          "categories": [e.dict_form() for e in all_categories]
-          })
+      if request.method == "DELETE":
+        if has_permission("delete:expenditures"):
+          target_category.delete()
+          all_categories = Category.query.all()
+          return jsonify({
+            "success": True,
+            "categories": [e.dict_form() for e in all_categories]
+            })
 
     @app.errorhandler(400)
     def handle_error_400(error):

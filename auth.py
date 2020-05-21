@@ -1,9 +1,14 @@
+"""Authorization code for app.
+
+Defines decorator @requires_auth(permission="") and helper function has_permission()"""
+
 import json
-from flask import request, _request_ctx_stack, abort
 from functools import wraps
-from jose import jwt
 from urllib.request import urlopen
 import os
+
+from jose import jwt
+from flask import request, abort
 
 AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
 ALGORITHMS = ['RS256']
@@ -139,3 +144,11 @@ def requires_auth(permission=''):
         return wrapper
     return requires_auth_decorator
 
+def has_permission(permission=''):
+    try:
+        token = get_token_auth_header()
+        payload = verify_decode_jwt(token)
+    except:
+        abort(401)
+
+    return check_permissions(permission, payload)
