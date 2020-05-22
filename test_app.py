@@ -112,7 +112,6 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_invalid_authentication_post(self):
         resp = requests.post(APP_URL+'/categories', json={"name": "Should Never Appear In Database"})
-        breakpoint()
         data = resp.json()
         self.assertEqual(resp.status_code, 401)
         self.assertFalse(data['success'])
