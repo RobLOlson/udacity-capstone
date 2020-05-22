@@ -141,6 +141,21 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 404)
         self.assertFalse(data['success'])
 
+    def test_post_category(self):
+        new_name = "".join(random.choices("abcdefghijklmn", k=10))
+        resp = requests.post(APP_URL+'/categories', json={"name": new_name}, headers=ADMIN_AUTH_HEADER)
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(data["success"])
+
+    def test_delete_category(self):
+        resp = requests.delete(APP_URL+'/categories/0',headers=ADMIN_AUTH_HEADER)
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(data["success"])
+
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # END OF CATEGORY ENDPOINTS
 # ----------------------------

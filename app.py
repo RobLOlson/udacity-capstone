@@ -117,7 +117,7 @@ def create_app(test_config=None):
 
   @app.route('/categories', methods=["POST"])
   @requires_auth(permission="post:expenditures")
-  def add_category():
+  def add_category(jwt):
     new_category = Category(**request.json)
     new_category.insert()
     return jsonify({
