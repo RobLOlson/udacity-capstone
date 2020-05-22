@@ -1,0 +1,718 @@
+{
+	"info": {
+		"_postman_id": "2e849a43-b7bc-48a6-b4c8-9490a3477344",
+		"name": "capstone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Localhost",
+			"item": [
+				{
+					"name": "POST /expenditures",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f44cf5e3-5d80-45d6-bb4d-b3f163a95d45",
+								"exec": [
+									"pm.environment.set(\"json_name\", \"TEST\"+_.random(1,1000))"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a393b182-f8ce-4673-a910-701a91c89e58",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{expenditure_name}}\",\n    \"amount\": {{expenditure_amount}},\n    \"category_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/expenditures",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"expenditures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /(expenditures)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "135bb5fd-25f6-43b5-87a9-b298a8222da7",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "32f8a47e-a4e7-4e41-9e45-3e188b0b8fe9",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/categories",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d343c5c0-6e7b-49ca-96f0-e89872b9e960",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{category_name}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/categories",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /expenditures/<int:expense_id>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "97246486-3f07-4102-9439-1dc563899e02",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"new {{expenditure_name}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/expenditures/0",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"expenditures",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /categories/<int:category_id>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3f27ac61-827c-4e8f-92ec-101d09e60a14",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "",
+								"variables": ""
+							},
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/categories/0",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"categories",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /expenditures/<int:expense_id>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "90e0d761-8707-441b-8554-78a7f2113087",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/expenditures/0",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"expenditures",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /categories/<int:category_id>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9ad09d45-a786-4f65-a719-6928ec343dd2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/categories/0",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"categories",
+								"0"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "heroku",
+			"item": [
+				{
+					"name": "POST /expenditures Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "16feeeef-c43e-44c8-93a1-f63a7f6fcf06",
+								"exec": [
+									"pm.environment.set(\"json_name\", \"TEST\"+_.random(1,1000))"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6400f822-fbbd-47f1-8a6c-82643b83e8f6",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{expenditure_name}}\",\n    \"amount\": {{expenditure_amount}},\n    \"category_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "moneytracklol.herokuapp.com/expenditures",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"expenditures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /(expenditures) Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c7d8c4a-93d5-45e0-bdd6-dacd50e1b496",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "moneytracklol.herokuapp.com",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /categories Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6fb76ea8-68a6-4f00-8ed7-cab14e817ef1",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "moneytracklol.herokuapp.com/categories",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /categories Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "52344ea9-9812-4fb6-a7d9-ae8b7270626c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{category_name}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "moneytracklol.herokuapp.com/categories",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /expenditures/<int:expense_id> Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a21d61e4-3b4a-4c9d-8c75-53c620df25ee",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"new {{expenditure_name}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "moneytracklol.herokuapp.com/expenditures/0",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"expenditures",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /categories/<int:category_id> Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8aa03142-ae86-4264-bfc1-401b7715ee6f",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"new {{category_name}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "moneytracklol.herokuapp.com/categories/0",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"categories",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /expenditures/<int:expense_id> Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "59f357fb-0042-4678-8135-c894760f2bd8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "moneytracklol.herokuapp.com/expenditures/0",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"expenditures",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /categories/<int:category_id> Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a092d06d-dd59-44e8-817c-a90c676d9b66",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTA2NTE0NTAsIm5iZiI6MTU4OTQ0MTg1MCwiZW1haWwiOiJib2JAYm9iLmNvbSJ9.Tv6D966WswleQxAfXHC9Xn6MroWqJb-JhFg09cZ-KXg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "moneytracklol.herokuapp.com/categories/0",
+							"host": [
+								"moneytracklol",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"categories",
+								"0"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkxCa0EyUmJRNWFlYS1lQndPWDRLNiJ9.eyJpc3MiOiJodHRwczovL3JvYmxvdWlzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZWFhMGNlMTZiNjliYzBjMTJlNDBlODUiLCJhdWQiOiJtb25leWFwaSIsImlhdCI6MTU5MDExODY0NCwiZXhwIjoxNTkwMjA1MDQ0LCJhenAiOiI0MFBzMFE0WnBzd1ljNzF6RjlvVVUzRTVRSE01UHJwaSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmV4cGVuZGl0dXJlcyIsInBhdGNoOmV4cGVuZGl0dXJlcyIsInBvc3Q6ZXhwZW5kaXR1cmVzIiwicmVhZDpleHBlbmRpdHVyZXMiXX0.EggoheIPK9YYwEmYFRCP3xgKJYeJ29MdAqQOt-A3P-rXhYn4Hvmw7naLOUAIDGfB741DNMQhkS1RRFQ3D949rLzXmJ81RTrD6WNtQ-3eIrblk8jIzWDxeGlKgKFTuIUjIdIF49-JybSO7gm7WPn50fSsq5GkGhE1wXoCfhVoDCgFi_j6fX0CXKhvz3QrzPTlPUPH9xBaO5Qx516cSUIz9TLnA09wOLfI1HC-_UBAuKK0EMbpihS_WMRtHagplnl98VGFRZ6FCMygNn5rEx16D_MFZaqhF4TI-wFLK3XUpOFmA2eZC2XS2QVRGI2CCE6KqZGSNXEJKnCunVioShysjQ",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1e3a1597-9aa1-444e-9775-822d4d25ae51",
+				"type": "text/javascript",
+				"exec": [
+					"var nouns = [\"apple\", \"banana\", \"coconut\", \"dixie cups\", \"piano\", \"clothes\", \"movie\", \"pizza\", \"keyboard\", \"mouse\", \"cat\", \"dog\"]",
+					"var adjectives = [\"red\", \"small\", \"fat\", \"soft\", \"romantic\", \"big\", \"blue\", \"red\", \"smart\", \"quick\"]",
+					"var categories = [\"sports\", \"food\", \"entertainment\", \"maintenance\", \"gardening\", \"DIY\", \"bills\", \"restaurants\", \"fun\", \"vacation\"]",
+					"var randexpense = adjectives[_.random(1, 9)] + \" \" + nouns[_.random(1, 11)] + _.random(1, 999)",
+					"var randcategory = adjectives[_.random(1, 9)] + \" \" + categories[_.random(1, 9)] + _.random(1, 999)",
+					"",
+					"pm.environment.set(\"expenditure_name\", randexpense)",
+					"pm.environment.set(\"expenditure_amount\", _.random(1, 1000))",
+					"pm.environment.set(\"category_name\", randcategory)"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "8e47b1df-8001-431c-a7b4-25dedf4db717",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ef6fc0e3-7272-48a1-ab03-99723f3d79e3",
+			"key": "expenditure_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "fe5ac80b-febb-468d-b952-cdbf85d1283f",
+			"key": "expenditure_amount",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
