@@ -149,6 +149,6 @@ def has_permission(permission=''):
         token = get_token_auth_header()
         payload = verify_decode_jwt(token)
     except:
-        abort(401)
+        return False
 
     return check_permissions(permission, payload)

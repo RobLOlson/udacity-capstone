@@ -31,10 +31,14 @@ class TriviaTestCase(unittest.TestCase):
             # create all tables
             # self.db.create_all()
 
-    def tearDown(self):
+
         """Executed after each test"""
         pass
 
+
+# ----------------------------
+# EXPENDITURE ENDPOINTS
+# vvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
     def test_get_expenditures(self):
         resp = self.client().get('/', json={})
@@ -43,6 +47,13 @@ class TriviaTestCase(unittest.TestCase):
         # self.assertEqual(resp.status_code, 200)
         self.assertTrue(data['success'])
         # self.assertTrue(data['total_questions'])
+
+    def test_invalid_get_expenditures(self):
+        resp = requests.get(APP_URL+"/expenditures/")
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 404)
+        self.assertFalse(data['success'])
 
     def test_new_expenditures(self):
         new_name = "".join(random.choices("abcdefghijklmn", k=10))
@@ -58,6 +69,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(db_old_size+1, db_new_size)
         self.assertTrue(data['success'])
 
+    def test_invalid_new_expense_json(self):
+        resp = requests.post(APP_URL+'/expenditures', json={}, headers=ADMIN_AUTH_HEADER)
+        data = resp.json()
+
+        self.assertEqual(data['error'], 422)
+        self.assertFalse(data['success'])
+
     def test_delete_expenditures(self):
         db_old_size = len(Expenditure.query.all())
         valid_ids = [el.id for el in Expenditure.query.all()]
@@ -68,13 +86,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(db_old_size-1, db_new_size)
         self.assertTrue(data['success'])
-
-    def test_invalid_new_expense_json(self):
-        resp = requests.post(APP_URL+'/expenditures', json={}, headers=ADMIN_AUTH_HEADER)
-        data = resp.json()
-
-        self.assertEqual(data['error'], 422)
-        self.assertFalse(data['success'])
 
     def test_invalid_expense_delete(self):
         resp = requests.delete(APP_URL+'/expenditures/10000', json={}, headers=ADMIN_AUTH_HEADER)
@@ -94,6 +105,27 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 405)
         self.assertFalse(data['success'])
 
+    def test_expenditure_patch(self):
+        resp = requests.patch(APP_URL+'/expenditures/0', json={"name": "Eryn Majetich"}, headers=ADMIN_AUTH_HEADER)
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(data["success"])
+
+    def test_invalid_expenditure_patch(self):
+        resp = requests.patch(APP_URL+"/expenditures/0",
+                              json={"Robert": "SHOULD_NOT_APPEAR_IN_DATABASE"}, headers=ADMIN_AUTH_HEADER)
+        data = resp.json()
+
+        self.assertEqual(data['error'], 422)
+        self.assertFalse(data["success"])
+
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# END OF EXPENDITURE ENDPOINTS
+# ----------------------------
+# CATEGORY ENDPOINTS
+# vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
     def test_category_list(self):
         resp = self.client().get('/categories/1/questions', json={})
         data = json.loads(resp.data)
@@ -104,11 +136,17 @@ class TriviaTestCase(unittest.TestCase):
 
 
     def test_invalid_url(self):
-        resp = requests.get(APP_URL+'/does_not_exist', json={})
+        resp = requests.get(APP_URL+'/categories/does_not_exist', json={})
         data = resp.json()
-
         self.assertEqual(resp.status_code, 404)
         self.assertFalse(data['success'])
+
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# END OF CATEGORY ENDPOINTS
+# ----------------------------
+# AUTHENTICATION TESTS
+# vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
 
     def test_invalid_authentication_post(self):
         resp = requests.post(APP_URL+'/categories', json={"name": "Should Never Appear In Database"})
@@ -116,6 +154,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 401)
         self.assertFalse(data['success'])
 
+    def test_invalid_authentication_delete(self):
+        resp = requests.delete(APP_URL+'/categories/0')
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 401)
+        self.assertFalse(data['success'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
