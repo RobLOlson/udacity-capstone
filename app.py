@@ -61,7 +61,6 @@ def create_app(test_config=None):
     @app.route("/expenditures/<int:expense_id>", methods=["GET", "PATCH", "DELETE"])
     def one_expenditure(expense_id):
       # if id is zero, use last submitted
-      breakpoint()
       try:
         if expense_id == 0:
           target_expense = Expenditure.query.order_by(text("id desc")).first()
