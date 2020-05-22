@@ -105,7 +105,7 @@ def create_app(test_config=None):
 
 
     @app.route('/categories', methods=["POST"])
-    # @requires_auth(permission="post:expenditures")
+    @requires_auth(permission="post:expenditures")
     def add_category():
       new_category = Category(**request.json)
       new_category.insert()
@@ -177,6 +177,15 @@ def create_app(test_config=None):
             "error": 404,
             "message": error.description,
             }), 404
+
+    @app.errorhandler(405)
+    def handle_error_405(error):
+        return jsonify({
+            "success": False,
+            "error": 405,
+            "message": error.description,
+            }), 405
+
 
     @app.errorhandler(422)
     def handle_error_422(error):

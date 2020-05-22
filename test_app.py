@@ -10,7 +10,7 @@ import requests
 
 APP_URL = os.environ.get("APP_URL")
 
-ADMIN_TOKEN = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkxCa0EyUmJRNWFlYS1lQndPWDRLNiJ9.eyJpc3MiOiJodHRwczovL3JvYmxvdWlzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZWFhMGNlMTZiNjliYzBjMTJlNDBlODUiLCJhdWQiOiJtb25leWFwaSIsImlhdCI6MTU5MDAzMTI0OCwiZXhwIjoxNTkwMTE3NjQ4LCJhenAiOiI0MFBzMFE0WnBzd1ljNzF6RjlvVVUzRTVRSE01UHJwaSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmV4cGVuZGl0dXJlcyIsInBhdGNoOmV4cGVuZGl0dXJlcyIsInBvc3Q6ZXhwZW5kaXR1cmVzIiwicmVhZDpleHBlbmRpdHVyZXMiXX0.T3XsY0XqOjRc8sUH7TKcMAuqJTZepxGlI7gfxQn2JXaAsS8qWGwjbju-v-0ZlmLWUeVh1ieYVPjodMjoTJ6mdtfCzUMZjR_MDnhwJ8-k4b4yPbBEt395ka94dtRpiAJy7ldrArHRimvSNh2ZmXPhVU3TI3YM0e7uqZ_f6fhX7wiZAj1ukMwZ6DVxY3Qgg8UXJt7-AKBcaFcCMD5im3GfYuO1pxtAlr3Jvj29keOI0XNqQVsHG6nolH1FDUxgx33kk02gklIHI3wy39pejCX08R-lb7nO81UlbWk21vW_J-ycpSvJHSc-RCQ7DqTI2Z8biRV9xAen87Bs6C9aLYL9CA"
+ADMIN_TOKEN = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkxCa0EyUmJRNWFlYS1lQndPWDRLNiJ9.eyJpc3MiOiJodHRwczovL3JvYmxvdWlzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZWFhMGNlMTZiNjliYzBjMTJlNDBlODUiLCJhdWQiOiJtb25leWFwaSIsImlhdCI6MTU5MDExODY0NCwiZXhwIjoxNTkwMjA1MDQ0LCJhenAiOiI0MFBzMFE0WnBzd1ljNzF6RjlvVVUzRTVRSE01UHJwaSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmV4cGVuZGl0dXJlcyIsInBhdGNoOmV4cGVuZGl0dXJlcyIsInBvc3Q6ZXhwZW5kaXR1cmVzIiwicmVhZDpleHBlbmRpdHVyZXMiXX0.EggoheIPK9YYwEmYFRCP3xgKJYeJ29MdAqQOt-A3P-rXhYn4Hvmw7naLOUAIDGfB741DNMQhkS1RRFQ3D949rLzXmJ81RTrD6WNtQ-3eIrblk8jIzWDxeGlKgKFTuIUjIdIF49-JybSO7gm7WPn50fSsq5GkGhE1wXoCfhVoDCgFi_j6fX0CXKhvz3QrzPTlPUPH9xBaO5Qx516cSUIz9TLnA09wOLfI1HC-_UBAuKK0EMbpihS_WMRtHagplnl98VGFRZ6FCMygNn5rEx16D_MFZaqhF4TI-wFLK3XUpOFmA2eZC2XS2QVRGI2CCE6KqZGSNXEJKnCunVioShysjQ"
 
 ADMIN_AUTH_HEADER = {"Authorization": ADMIN_TOKEN}
 
@@ -83,6 +83,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['error'], 404)
         self.assertFalse(data['success'])
 
+    def test_invalid_expense_post(self):
+        resp = requests.post(APP_URL+'/expenditures/1', json={"question": "How?",
+ "answer": "do ya do?",
+ "category": 1,
+ "difficulty": 1}, headers=ADMIN_AUTH_HEADER)
+
+        data = resp.json()
+
+        self.assertEqual(resp.status_code, 405)
+        self.assertFalse(data['success'])
+
     def test_category_list(self):
         resp = self.client().get('/categories/1/questions', json={})
         data = json.loads(resp.data)
@@ -90,13 +101,6 @@ class TriviaTestCase(unittest.TestCase):
  #        self.assertEqual(resp.status_code, 200)
  #        self.assertTrue(data['success'])
  #        self.assertTrue(data['total_questions'])
-
- #    def test_get_quizzes(self):
- #        resp = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Science", "id": 1}})
- #        data = json.loads(resp.data)
-
- #        self.assertEqual(resp.status_code, 200)
- #        self.assertTrue(data['success'])
 
 
     def test_invalid_url(self):
@@ -106,17 +110,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 404)
         self.assertFalse(data['success'])
 
-
-
- #    def test_invalid_question_post_url(self):
- #        resp = self.client().post('/questions/1', json={"question": "How?",
- # "answer": "do ya do?",
- # "category": 1,
- # "difficulty": 1})
- #        data = json.loads(resp.data)
-
- #        self.assertEqual(resp.status_code, 405)
- #        self.assertFalse(data['success'])
+    def test_invalid_authentication_post(self):
+        resp = requests.post(APP_URL+'/categories', json={"name": "Should Never Appear In Database"})
+        breakpoint()
+        data = resp.json()
+        self.assertEqual(resp.status_code, 401)
+        self.assertFalse(data['success'])
 
 
 # Make the tests conveniently executable
