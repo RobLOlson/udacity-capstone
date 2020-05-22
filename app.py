@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import setup_db, Expenditure, Category
 from sqlalchemy import text
-from auth import requires_auth, has_permission
+from auth import requires_auth, has_permission, AuthError
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -47,7 +47,11 @@ def create_app(test_config=None):
     @app.route("/expenditures", methods=["POST"])
     @requires_auth(permission="post:expenditures")
     def add_expenditure(jwt):
-      new_expense = Expenditure(**request.json)
+      try:
+        new_expense = Expenditure(**request.json)
+      except TypeError:
+        abort(422)
+
       new_expense.insert()
       return jsonify({
         "success": True,
@@ -57,34 +61,40 @@ def create_app(test_config=None):
     @app.route("/expenditures/<int:expense_id>", methods=["GET", "PATCH", "DELETE"])
     def one_expenditure(expense_id):
       # if id is zero, use last submitted
-      if expense_id == 0:
-        target_expense = Expenditure.query.order_by(text("id desc")).first()
-      else:
-        target_expense = Expenditure.query.get(expense_id)
+      breakpoint()
+      try:
+        if expense_id == 0:
+          target_expense = Expenditure.query.order_by(text("id desc")).first()
+        else:
+          target_expense = Expenditure.query.filter_by(id=expense_id).one()
+      except:
+        abort(404)
 
-      if request.method == "GET":
-
-        return jsonify({
-          "success": True,
-          "expenditure": target_expense.dict_form(),
-          })
-
-      if request.method == "PATCH":
-        if has_permission("patch:expenditures"):
-          target_expense.update(request.json)
+      try:
+        if request.method == "GET":
           return jsonify({
             "success": True,
             "expenditure": target_expense.dict_form(),
-          })
-
-      if request.method == "DELETE":
-        if has_permission("delete:expenditures"):
-          target_expense.delete()
-          all_expenditures = Expenditure.query.all()
-          return jsonify({
-            "success": True,
-            "expenditures": [e.dict_form() for e in all_expenditures]
             })
+
+        if request.method == "PATCH":
+          if has_permission("patch:expenditures"):
+            target_expense.update(request.json)
+            return jsonify({
+              "success": True,
+              "expenditure": target_expense.dict_form(),
+            })
+
+        if request.method == "DELETE":
+          if has_permission("delete:expenditures"):
+            target_expense.delete()
+            all_expenditures = Expenditure.query.all()
+            return jsonify({
+              "success": True,
+              "expenditures": [e.dict_form() for e in all_expenditures]
+              })
+      except:
+        abort(422)
 
     @app.route("/categories")
     def get_categories():
@@ -170,10 +180,10 @@ def create_app(test_config=None):
             }), 404
 
     @app.errorhandler(422)
-    def handle_error_402(error):
+    def handle_error_422(error):
         return jsonify({
             "success": False,
-            "error": 402,
+            "error": 422,
             "message": error.description,
             })
     return app

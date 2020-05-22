@@ -69,6 +69,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(db_old_size-1, db_new_size)
         self.assertTrue(data['success'])
 
+    def test_invalid_new_expense_json(self):
+        resp = requests.post(APP_URL+'/expenditures', json={}, headers=ADMIN_AUTH_HEADER)
+        data = resp.json()
+
+        self.assertEqual(data['error'], 422)
+        self.assertFalse(data['success'])
+
+    def test_invalid_expense_delete(self):
+        resp = requests.delete(APP_URL+'/expenditures/10000', json={}, headers=ADMIN_AUTH_HEADER)
+        data = resp.json()
+
+        self.assertEqual(data['error'], 404)
+        self.assertFalse(data['success'])
+
     def test_category_list(self):
         resp = self.client().get('/categories/1/questions', json={})
         data = json.loads(resp.data)
@@ -92,19 +106,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 404)
         self.assertFalse(data['success'])
 
- #    def test_invalid_question_post_json(self):
- #        resp = self.client().post('/questions', json={})
- #        data = json.loads(resp.data)
 
- #        self.assertEqual(resp.status_code, 400)
- #        self.assertFalse(data['success'])
-
- #    def test_invalid_delete(self):
- #        resp = self.client().delete('/questions/1000', json={})
- #        data = json.loads(resp.data)
-
- #        self.assertEqual(resp.status_code, 404)
- #        self.assertFalse(data['success'])
 
  #    def test_invalid_question_post_url(self):
  #        resp = self.client().post('/questions/1', json={"question": "How?",

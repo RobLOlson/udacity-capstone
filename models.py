@@ -28,11 +28,11 @@ class Expenditure(db.Model):
   id = Column(Integer, primary_key=True)
   name = Column(String)
   amount = Column(Integer) # in cents
-  category_id = db.Column(Integer, ForeignKey('Category.id'))
+  category_id = Column(Integer, ForeignKey('Category.id'))
   category = db.relationship('Category', backref="expenditures", lazy=True)
 
 
-  def __init__(self, name, amount, category_id=None):
+  def __init__(self, name, amount=0, category_id=None):
     self.name = name
     self.amount = amount
     self.category_id=category_id
